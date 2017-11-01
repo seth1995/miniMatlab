@@ -1,0 +1,16 @@
+<RCC>
+<qresource>
+    <file>images/fmin.ico</file>
+    <file>images/fmax.ico</file>
+    <file>images/rerun.ico</file>
+    <file>images/sens.ico</file>
+    <file>images/exit.png</file>
+    <file>images/help.png</file>
+    <file>images/pdf.png</file>
+    <file>images/plot_ac.png</file>
+    <file>images/print.png</file>
+    <file>images/zoomin.png</file>
+    <file>images/zoomout.png</file>
+    <file>in1.txt</file>
+</qresource>
+</RCC>

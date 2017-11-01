@@ -1,0 +1,860 @@
+Terminals unused in grammar
+
+   CLEAR_STR
+   PRINT_STR
+   ALL_STR
+
+
+Grammar
+
+    0 $accept: L "end of file"
+
+    1 $@1: %empty
+
+    2 L: ID '=' E $@1 EOL L
+
+    3 $@2: %empty
+
+    4 L: E $@2 EOL L
+
+    5 $@3: %empty
+
+    6 L: PLOT $@3 EOL L
+
+    7 $@4: %empty
+
+    8 L: FIGURE $@4 EOL L
+
+    9 $@5: %empty
+
+   10 L: COMMAND_ALL $@5 EOL L
+   11  | %empty
+
+   12 E: E ADDOP T
+   13  | T
+
+   14 T: T MULTOP G
+   15  | G
+
+   16 G: F
+   17  | VEC
+
+   18 VEC: F ':' F ':' F
+   19    | F ':' F
+
+   20 F: NUM
+   21  | CONST
+   22  | ID '(' E ')'
+   23  | ID
+   24  | '(' E ')'
+   25  | FUNC '(' E ')'
+   26  | ADDOP F
+
+   27 PLOT: PLOTOP '(' E ',' E ')'
+
+   28 FIGURE: FIGUREOP '(' NUM ')'
+   29       | FIGUREOP
+
+   30 COMMAND_ALL: token_str token_str
+
+   31 token_str: STRING_S
+
+
+Terminals, with rules where they appear
+
+"end of file" (0) 0
+'(' (40) 22 24 25 27 28
+')' (41) 22 24 25 27 28
+',' (44) 27
+':' (58) 18 19
+'=' (61) 2
+error (256)
+NUM (258) 20 28
+ADDOP (259) 12 26
+MULTOP (260) 14
+EOL (261) 2 4 6 8 10
+ID (262) 2 22 23
+FUNC (263) 25
+CONST (264) 21
+STRING_S (265) 31
+PLOTOP (266) 27
+FIGUREOP (267) 28 29
+CLEAR_STR (268)
+PRINT_STR (269)
+ALL_STR (270)
+
+
+Nonterminals, with rules where they appear
+
+$accept (21)
+    on left: 0
+L (22)
+    on left: 2 4 6 8 10 11, on right: 0 2 4 6 8 10
+$@1 (23)
+    on left: 1, on right: 2
+$@2 (24)
+    on left: 3, on right: 4
+$@3 (25)
+    on left: 5, on right: 6
+$@4 (26)
+    on left: 7, on right: 8
+$@5 (27)
+    on left: 9, on right: 10
+E (28)
+    on left: 12 13, on right: 2 4 12 22 24 25 27
+T (29)
+    on left: 14 15, on right: 12 13 14
+G (30)
+    on left: 16 17, on right: 14 15
+VEC (31)
+    on left: 18 19, on right: 17
+F (32)
+    on left: 20 21 22 23 24 25 26, on right: 16 18 19 26
+PLOT (33)
+    on left: 27, on right: 6
+FIGURE (34)
+    on left: 28 29, on right: 8
+COMMAND_ALL (35)
+    on left: 30, on right: 10
+token_str (36)
+    on left: 31, on right: 30
+
+
+State 0
+
+    0 $accept: . L "end of file"
+
+    NUM       shift, and go to state 1
+    ADDOP     shift, and go to state 2
+    ID        shift, and go to state 3
+    FUNC      shift, and go to state 4
+    CONST     shift, and go to state 5
+    STRING_S  shift, and go to state 6
+    PLOTOP    shift, and go to state 7
+    FIGUREOP  shift, and go to state 8
+    '('       shift, and go to state 9
+
+    $default  reduce using rule 11 (L)
+
+    L            go to state 10
+    E            go to state 11
+    T            go to state 12
+    G            go to state 13
+    VEC          go to state 14
+    F            go to state 15
+    PLOT         go to state 16
+    FIGURE       go to state 17
+    COMMAND_ALL  go to state 18
+    token_str    go to state 19
+
+
+State 1
+
+   20 F: NUM .
+
+    $default  reduce using rule 20 (F)
+
+
+State 2
+
+   26 F: ADDOP . F
+
+    NUM    shift, and go to state 1
+    ADDOP  shift, and go to state 2
+    ID     shift, and go to state 20
+    FUNC   shift, and go to state 4
+    CONST  shift, and go to state 5
+    '('    shift, and go to state 9
+
+    F  go to state 21
+
+
+State 3
+
+    2 L: ID . '=' E $@1 EOL L
+   22 F: ID . '(' E ')'
+   23  | ID .
+
+    '='  shift, and go to state 22
+    '('  shift, and go to state 23
+
+    $default  reduce using rule 23 (F)
+
+
+State 4
+
+   25 F: FUNC . '(' E ')'
+
+    '('  shift, and go to state 24
+
+
+State 5
+
+   21 F: CONST .
+
+    $default  reduce using rule 21 (F)
+
+
+State 6
+
+   31 token_str: STRING_S .
+
+    $default  reduce using rule 31 (token_str)
+
+
+State 7
+
+   27 PLOT: PLOTOP . '(' E ',' E ')'
+
+    '('  shift, and go to state 25
+
+
+State 8
+
+   28 FIGURE: FIGUREOP . '(' NUM ')'
+   29       | FIGUREOP .
+
+    '('  shift, and go to state 26
+
+    $default  reduce using rule 29 (FIGURE)
+
+
+State 9
+
+   24 F: '(' . E ')'
+
+    NUM    shift, and go to state 1
+    ADDOP  shift, and go to state 2
+    ID     shift, and go to state 20
+    FUNC   shift, and go to state 4
+    CONST  shift, and go to state 5
+    '('    shift, and go to state 9
+
+    E    go to state 27
+    T    go to state 12
+    G    go to state 13
+    VEC  go to state 14
+    F    go to state 15
+
+
+State 10
+
+    0 $accept: L . "end of file"
+
+    "end of file"  shift, and go to state 28
+
+
+State 11
+
+    4 L: E . $@2 EOL L
+   12 E: E . ADDOP T
+
+    ADDOP  shift, and go to state 29
+
+    $default  reduce using rule 3 ($@2)
+
+    $@2  go to state 30
+
+
+State 12
+
+   13 E: T .
+   14 T: T . MULTOP G
+
+    MULTOP  shift, and go to state 31
+
+    $default  reduce using rule 13 (E)
+
+
+State 13
+
+   15 T: G .
+
+    $default  reduce using rule 15 (T)
+
+
+State 14
+
+   17 G: VEC .
+
+    $default  reduce using rule 17 (G)
+
+
+State 15
+
+   16 G: F .
+   18 VEC: F . ':' F ':' F
+   19    | F . ':' F
+
+    ':'  shift, and go to state 32
+
+    $default  reduce using rule 16 (G)
+
+
+State 16
+
+    6 L: PLOT . $@3 EOL L
+
+    $default  reduce using rule 5 ($@3)
+
+    $@3  go to state 33
+
+
+State 17
+
+    8 L: FIGURE . $@4 EOL L
+
+    $default  reduce using rule 7 ($@4)
+
+    $@4  go to state 34
+
+
+State 18
+
+   10 L: COMMAND_ALL . $@5 EOL L
+
+    $default  reduce using rule 9 ($@5)
+
+    $@5  go to state 35
+
+
+State 19
+
+   30 COMMAND_ALL: token_str . token_str
+
+    STRING_S  shift, and go to state 6
+
+    token_str  go to state 36
+
+
+State 20
+
+   22 F: ID . '(' E ')'
+   23  | ID .
+
+    '('  shift, and go to state 23
+
+    $default  reduce using rule 23 (F)
+
+
+State 21
+
+   26 F: ADDOP F .
+
+    $default  reduce using rule 26 (F)
+
+
+State 22
+
+    2 L: ID '=' . E $@1 EOL L
+
+    NUM    shift, and go to state 1
+    ADDOP  shift, and go to state 2
+    ID     shift, and go to state 20
+    FUNC   shift, and go to state 4
+    CONST  shift, and go to state 5
+    '('    shift, and go to state 9
+
+    E    go to state 37
+    T    go to state 12
+    G    go to state 13
+    VEC  go to state 14
+    F    go to state 15
+
+
+State 23
+
+   22 F: ID '(' . E ')'
+
+    NUM    shift, and go to state 1
+    ADDOP  shift, and go to state 2
+    ID     shift, and go to state 20
+    FUNC   shift, and go to state 4
+    CONST  shift, and go to state 5
+    '('    shift, and go to state 9
+
+    E    go to state 38
+    T    go to state 12
+    G    go to state 13
+    VEC  go to state 14
+    F    go to state 15
+
+
+State 24
+
+   25 F: FUNC '(' . E ')'
+
+    NUM    shift, and go to state 1
+    ADDOP  shift, and go to state 2
+    ID     shift, and go to state 20
+    FUNC   shift, and go to state 4
+    CONST  shift, and go to state 5
+    '('    shift, and go to state 9
+
+    E    go to state 39
+    T    go to state 12
+    G    go to state 13
+    VEC  go to state 14
+    F    go to state 15
+
+
+State 25
+
+   27 PLOT: PLOTOP '(' . E ',' E ')'
+
+    NUM    shift, and go to state 1
+    ADDOP  shift, and go to state 2
+    ID     shift, and go to state 20
+    FUNC   shift, and go to state 4
+    CONST  shift, and go to state 5
+    '('    shift, and go to state 9
+
+    E    go to state 40
+    T    go to state 12
+    G    go to state 13
+    VEC  go to state 14
+    F    go to state 15
+
+
+State 26
+
+   28 FIGURE: FIGUREOP '(' . NUM ')'
+
+    NUM  shift, and go to state 41
+
+
+State 27
+
+   12 E: E . ADDOP T
+   24 F: '(' E . ')'
+
+    ADDOP  shift, and go to state 29
+    ')'    shift, and go to state 42
+
+
+State 28
+
+    0 $accept: L "end of file" .
+
+    $default  accept
+
+
+State 29
+
+   12 E: E ADDOP . T
+
+    NUM    shift, and go to state 1
+    ADDOP  shift, and go to state 2
+    ID     shift, and go to state 20
+    FUNC   shift, and go to state 4
+    CONST  shift, and go to state 5
+    '('    shift, and go to state 9
+
+    T    go to state 43
+    G    go to state 13
+    VEC  go to state 14
+    F    go to state 15
+
+
+State 30
+
+    4 L: E $@2 . EOL L
+
+    EOL  shift, and go to state 44
+
+
+State 31
+
+   14 T: T MULTOP . G
+
+    NUM    shift, and go to state 1
+    ADDOP  shift, and go to state 2
+    ID     shift, and go to state 20
+    FUNC   shift, and go to state 4
+    CONST  shift, and go to state 5
+    '('    shift, and go to state 9
+
+    G    go to state 45
+    VEC  go to state 14
+    F    go to state 15
+
+
+State 32
+
+   18 VEC: F ':' . F ':' F
+   19    | F ':' . F
+
+    NUM    shift, and go to state 1
+    ADDOP  shift, and go to state 2
+    ID     shift, and go to state 20
+    FUNC   shift, and go to state 4
+    CONST  shift, and go to state 5
+    '('    shift, and go to state 9
+
+    F  go to state 46
+
+
+State 33
+
+    6 L: PLOT $@3 . EOL L
+
+    EOL  shift, and go to state 47
+
+
+State 34
+
+    8 L: FIGURE $@4 . EOL L
+
+    EOL  shift, and go to state 48
+
+
+State 35
+
+   10 L: COMMAND_ALL $@5 . EOL L
+
+    EOL  shift, and go to state 49
+
+
+State 36
+
+   30 COMMAND_ALL: token_str token_str .
+
+    $default  reduce using rule 30 (COMMAND_ALL)
+
+
+State 37
+
+    2 L: ID '=' E . $@1 EOL L
+   12 E: E . ADDOP T
+
+    ADDOP  shift, and go to state 29
+
+    $default  reduce using rule 1 ($@1)
+
+    $@1  go to state 50
+
+
+State 38
+
+   12 E: E . ADDOP T
+   22 F: ID '(' E . ')'
+
+    ADDOP  shift, and go to state 29
+    ')'    shift, and go to state 51
+
+
+State 39
+
+   12 E: E . ADDOP T
+   25 F: FUNC '(' E . ')'
+
+    ADDOP  shift, and go to state 29
+    ')'    shift, and go to state 52
+
+
+State 40
+
+   12 E: E . ADDOP T
+   27 PLOT: PLOTOP '(' E . ',' E ')'
+
+    ADDOP  shift, and go to state 29
+    ','    shift, and go to state 53
+
+
+State 41
+
+   28 FIGURE: FIGUREOP '(' NUM . ')'
+
+    ')'  shift, and go to state 54
+
+
+State 42
+
+   24 F: '(' E ')' .
+
+    $default  reduce using rule 24 (F)
+
+
+State 43
+
+   12 E: E ADDOP T .
+   14 T: T . MULTOP G
+
+    MULTOP  shift, and go to state 31
+
+    $default  reduce using rule 12 (E)
+
+
+State 44
+
+    4 L: E $@2 EOL . L
+
+    NUM       shift, and go to state 1
+    ADDOP     shift, and go to state 2
+    ID        shift, and go to state 3
+    FUNC      shift, and go to state 4
+    CONST     shift, and go to state 5
+    STRING_S  shift, and go to state 6
+    PLOTOP    shift, and go to state 7
+    FIGUREOP  shift, and go to state 8
+    '('       shift, and go to state 9
+
+    $default  reduce using rule 11 (L)
+
+    L            go to state 55
+    E            go to state 11
+    T            go to state 12
+    G            go to state 13
+    VEC          go to state 14
+    F            go to state 15
+    PLOT         go to state 16
+    FIGURE       go to state 17
+    COMMAND_ALL  go to state 18
+    token_str    go to state 19
+
+
+State 45
+
+   14 T: T MULTOP G .
+
+    $default  reduce using rule 14 (T)
+
+
+State 46
+
+   18 VEC: F ':' F . ':' F
+   19    | F ':' F .
+
+    ':'  shift, and go to state 56
+
+    $default  reduce using rule 19 (VEC)
+
+
+State 47
+
+    6 L: PLOT $@3 EOL . L
+
+    NUM       shift, and go to state 1
+    ADDOP     shift, and go to state 2
+    ID        shift, and go to state 3
+    FUNC      shift, and go to state 4
+    CONST     shift, and go to state 5
+    STRING_S  shift, and go to state 6
+    PLOTOP    shift, and go to state 7
+    FIGUREOP  shift, and go to state 8
+    '('       shift, and go to state 9
+
+    $default  reduce using rule 11 (L)
+
+    L            go to state 57
+    E            go to state 11
+    T            go to state 12
+    G            go to state 13
+    VEC          go to state 14
+    F            go to state 15
+    PLOT         go to state 16
+    FIGURE       go to state 17
+    COMMAND_ALL  go to state 18
+    token_str    go to state 19
+
+
+State 48
+
+    8 L: FIGURE $@4 EOL . L
+
+    NUM       shift, and go to state 1
+    ADDOP     shift, and go to state 2
+    ID        shift, and go to state 3
+    FUNC      shift, and go to state 4
+    CONST     shift, and go to state 5
+    STRING_S  shift, and go to state 6
+    PLOTOP    shift, and go to state 7
+    FIGUREOP  shift, and go to state 8
+    '('       shift, and go to state 9
+
+    $default  reduce using rule 11 (L)
+
+    L            go to state 58
+    E            go to state 11
+    T            go to state 12
+    G            go to state 13
+    VEC          go to state 14
+    F            go to state 15
+    PLOT         go to state 16
+    FIGURE       go to state 17
+    COMMAND_ALL  go to state 18
+    token_str    go to state 19
+
+
+State 49
+
+   10 L: COMMAND_ALL $@5 EOL . L
+
+    NUM       shift, and go to state 1
+    ADDOP     shift, and go to state 2
+    ID        shift, and go to state 3
+    FUNC      shift, and go to state 4
+    CONST     shift, and go to state 5
+    STRING_S  shift, and go to state 6
+    PLOTOP    shift, and go to state 7
+    FIGUREOP  shift, and go to state 8
+    '('       shift, and go to state 9
+
+    $default  reduce using rule 11 (L)
+
+    L            go to state 59
+    E            go to state 11
+    T            go to state 12
+    G            go to state 13
+    VEC          go to state 14
+    F            go to state 15
+    PLOT         go to state 16
+    FIGURE       go to state 17
+    COMMAND_ALL  go to state 18
+    token_str    go to state 19
+
+
+State 50
+
+    2 L: ID '=' E $@1 . EOL L
+
+    EOL  shift, and go to state 60
+
+
+State 51
+
+   22 F: ID '(' E ')' .
+
+    $default  reduce using rule 22 (F)
+
+
+State 52
+
+   25 F: FUNC '(' E ')' .
+
+    $default  reduce using rule 25 (F)
+
+
+State 53
+
+   27 PLOT: PLOTOP '(' E ',' . E ')'
+
+    NUM    shift, and go to state 1
+    ADDOP  shift, and go to state 2
+    ID     shift, and go to state 20
+    FUNC   shift, and go to state 4
+    CONST  shift, and go to state 5
+    '('    shift, and go to state 9
+
+    E    go to state 61
+    T    go to state 12
+    G    go to state 13
+    VEC  go to state 14
+    F    go to state 15
+
+
+State 54
+
+   28 FIGURE: FIGUREOP '(' NUM ')' .
+
+    $default  reduce using rule 28 (FIGURE)
+
+
+State 55
+
+    4 L: E $@2 EOL L .
+
+    $default  reduce using rule 4 (L)
+
+
+State 56
+
+   18 VEC: F ':' F ':' . F
+
+    NUM    shift, and go to state 1
+    ADDOP  shift, and go to state 2
+    ID     shift, and go to state 20
+    FUNC   shift, and go to state 4
+    CONST  shift, and go to state 5
+    '('    shift, and go to state 9
+
+    F  go to state 62
+
+
+State 57
+
+    6 L: PLOT $@3 EOL L .
+
+    $default  reduce using rule 6 (L)
+
+
+State 58
+
+    8 L: FIGURE $@4 EOL L .
+
+    $default  reduce using rule 8 (L)
+
+
+State 59
+
+   10 L: COMMAND_ALL $@5 EOL L .
+
+    $default  reduce using rule 10 (L)
+
+
+State 60
+
+    2 L: ID '=' E $@1 EOL . L
+
+    NUM       shift, and go to state 1
+    ADDOP     shift, and go to state 2
+    ID        shift, and go to state 3
+    FUNC      shift, and go to state 4
+    CONST     shift, and go to state 5
+    STRING_S  shift, and go to state 6
+    PLOTOP    shift, and go to state 7
+    FIGUREOP  shift, and go to state 8
+    '('       shift, and go to state 9
+
+    $default  reduce using rule 11 (L)
+
+    L            go to state 63
+    E            go to state 11
+    T            go to state 12
+    G            go to state 13
+    VEC          go to state 14
+    F            go to state 15
+    PLOT         go to state 16
+    FIGURE       go to state 17
+    COMMAND_ALL  go to state 18
+    token_str    go to state 19
+
+
+State 61
+
+   12 E: E . ADDOP T
+   27 PLOT: PLOTOP '(' E ',' E . ')'
+
+    ADDOP  shift, and go to state 29
+    ')'    shift, and go to state 64
+
+
+State 62
+
+   18 VEC: F ':' F ':' F .
+
+    $default  reduce using rule 18 (VEC)
+
+
+State 63
+
+    2 L: ID '=' E $@1 EOL L .
+
+    $default  reduce using rule 2 (L)
+
+
+State 64
+
+   27 PLOT: PLOTOP '(' E ',' E ')' .
+
+    $default  reduce using rule 27 (PLOT)

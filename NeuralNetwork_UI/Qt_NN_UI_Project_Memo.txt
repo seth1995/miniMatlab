@@ -1,0 +1,21 @@
+  Qt_NN_UI_Project_Memo.txt
+  2017/7/1
+
+  1. 
+  This project is for creating neural network (NN) user interface (UI).
+  The graphical interface uses Qt.
+
+  2. 
+  This project begins with the "plotter" exercise which draws several
+  curves by reading data from a file.
+
+  3. 
+  I put the past GTK plotter code into this project for merging.
+
+  4.
+  I wish this project will evolve into a Neural Network Designer
+  (NNDesigner).
+
+  5.
+
+

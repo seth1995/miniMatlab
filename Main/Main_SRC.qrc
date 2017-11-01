@@ -1,0 +1,40 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>images/check.ico</file>
+    <file>images/clear.png</file>
+    <file>images/clear_sens.ico</file>
+    <file>images/cross.ico</file>
+    <file>images/copy.png</file>
+    <file>images/cut.png</file>
+    <file>images/device.ico</file>
+    <file>images/design.png</file>
+    <file>images/document.png</file>
+    <file>images/exit.png</file>
+    <file>images/fmin.ico</file>
+    <file>images/fmax.ico</file>
+    <file>images/grass_logo.ico</file>
+    <file>images/grass_image.png</file>
+    <file>images/help.png</file>
+    <file>images/neural_network.png</file>
+    <file>images/new.png</file>
+    <file>images/open.png</file>
+    <file>images/paste.png</file>
+    <file>images/pdf.png</file>
+    <file>images/plot_ac.png</file>
+    <file>images/print.png</file>
+    <file>images/Qt_Studio.png</file>
+    <file>images/Qt_Studio2.png</file>
+    <file>images/rerun.ico</file>
+    <file>images/save.png</file>
+    <file>images/size.ico</file>
+    <file>images/sens.ico</file>
+    <file>images/simulate.ico</file>
+    <file>images/xMajorGrid.png</file>
+    <file>images/xMinorGrid.png</file>
+    <file>images/yMinorGrid.png</file>
+    <file>images/yMajorGrid.png</file>
+    <file>images/schematic.png</file>
+    <file>images/waveviewer.ico</file>
+    <file>images/zoom.png</file>
+</qresource>
+</RCC>

@@ -1,0 +1,53 @@
+# Make_Line_Parser
+# This is a makefile for generating the CPP source code of the
+# command line parser.
+# Written on 2017/7/6
+
+CC = gcc
+CPP = g++
+FLEX = flex
+BISON = bison
+RM = rm
+CP = cp
+MKDIR = mkdir
+AR = ar
+RANLIB = ranlib
+
+# -DTRACEx is to temporarily switch on tracing; 
+# To switch on all tracing use -DTRACE
+DEFINES = -DNTEST_PARSER -DTRACE 
+CFLAGS = $(DEFINES) -g -O3
+
+TARGET=
+
+PARSER_SRC=\
+	   CmdLineParser.cpp \
+	   CmdLineScanner.cpp \
+
+SRCS= $(PARSER_SRC) \
+	   CmdLineParserUtility.cpp \
+
+OBJS=$(SRCS:.cpp=.o)
+
+.cpp.o:
+	$(CPP) -c $(CFLAGS) $<
+
+
+all: CmdLineScanner.cpp CmdLineParser.cpp
+
+# Customize the prefix "Cmd::" in the generated parser
+CmdLineScanner.cpp: CmdLineScanner.lex CmdLineParserUtility.h
+	flex -PCmd CmdLineScanner.lex
+CmdLineParser.cpp: CmdLineParser.yy CmdLineParserUtility.h
+	bison -p Cmd CmdLineParser.yy
+
+
+#-------------------------------------------
+clean:
+	rm -f *.hh
+	rm -f *.hpp
+	rm -f $(PARSER_SRC)
+	rm -f $(OBJS)
+	rm -f $(TARGET)
+
+
