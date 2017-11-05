@@ -12,6 +12,7 @@
 #include <QString>
 #include <QSplashScreen>
 
+
 #include <string>
 #include <iostream>
 
@@ -94,6 +95,7 @@ void MainWindow::doRestConstruct()
 	createMenus();
 	createToolBars();
 	createStatusBar();
+
 
 	// connect fileBrowser signal
 	connect( fileBrowser, SIGNAL(fileDoubleClicked(int, int)),
@@ -381,6 +383,11 @@ void MainWindow::createActions()
 	//	connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
     	windowActionGroup = new QActionGroup(this);
+
+	//Creat action group of student
+	ButtonBoxAction = new QAction(QIcon(":/images/Classroom.png"), tr("&BottonBox"), this);
+	ButtonBoxAction ->setStatusTip( tr("2017_Fall_DocCourse") );
+	//connect( ButtonBoxAction, SIGNAL(triggered()), this, SLOT(CourseButtonBox()) );
 }
 
 #if 1
@@ -485,10 +492,47 @@ void MainWindow::createToolBars()
 	designToolBar->addAction(waveviewAction);
 	designToolBar->addAction(simuAction);
 	designToolBar->addAction(designAction);
+	//designToolBar->addAction(ButtonBoxAcgrouption);
 
-//	designAction->setEnabled(false);
+	// Add Course action  to toolbar
+	projectToolBar = addToolBar(tr("Project"));
+	projectToolBar -> addWidget(creatGroupBox());
+
+	//	designAction->setEnabled(false);
 		
 }
+
+QPushButton *MainWindow::creatGroupBox()
+{
+	//QGroupBox *groupBox = new QGroupBox(tr("&Push Buttons"));
+	QPushButton *popupButton = new QPushButton(QIcon(":/images/Classroom.png"), tr("&CourseProject"), this);
+    QMenu *menu = new QMenu(this);
+    menu->addAction(tr("&1 谢起旭"));
+    menu->addAction(tr("&2 吴赟韬"));
+    menu->addAction(tr("&3 张宇航"));
+	menu->addAction(tr("&4 甄沛宁"));
+	menu->addAction(tr("&5 张异凡"));
+	menu->addAction(tr("&6 赵永磊"));
+	menu->addAction(tr("&7 虞灏"));
+	menu->addAction(tr("&8 陈佳鸣"));
+	menu->addAction(tr("&9 杨科"));
+	menu->addAction(tr("&10 郭人颂"));
+	menu->addAction(tr("&11 齐一衡"));
+	menu->addAction(tr("&12 梁威猛"));
+	menu->addAction(tr("&13 章伦"));
+	menu->addAction(tr("&14 贲月晶"));
+	menu->addAction(tr("&15 张灏"));
+	popupButton->setMenu(menu);
+	
+	/*
+	QVBoxLayout *vbox = new QVBoxLayout;
+	vbox -> addWidget(popupButton);
+	vbox -> addStretch(1);
+	groupBox -> setLayout(vbox);
+	*/
+	return popupButton;
+
+};
 
 /*
    If user wanna cut some text, it must has at least one actived editor.
@@ -977,6 +1021,7 @@ void MainWindow::startNeuralNetworkEditor()
 	
     nnInterface->show();
 }
+
 
 /**
 	Multiple schematic editors are allowed.
