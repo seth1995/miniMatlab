@@ -16,8 +16,6 @@
 #include <QSplashScreen>
 #include <QtCore/QTimer>
 #include <QtGui/QDialog>
-#include <QTextCodec>
-
 
 #include "MainWindow.h"
 
@@ -32,10 +30,6 @@ int main(int argc, char *argv[])
 
 	QApplication app(argc, argv);	
 	//QDialog dialog;
-	//Transfer to chinese display
-	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
-	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));		//支持Tr中文
-	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
 #if 0
 	// Create a starting splash display.

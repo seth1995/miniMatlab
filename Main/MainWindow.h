@@ -29,8 +29,6 @@ class QSplitter;
 class QString;
 class QTimer;
 class QSplashScreen;
-//class QGroupBox;
-class QPushButton;
 
 class CommandView;
 class FileBrowser;
@@ -94,7 +92,6 @@ private slots:
 	void startSchematicEditor();
 	void startNeuralNetworkEditor();
 	void startDesignPanel();
-
 	
 	void plotDCWaves();
 	void plotTRWaves();
@@ -118,7 +115,7 @@ private:
 
 	void readSettings();
 	void writeSettings();
-	QPushButton *creatGroupBox();
+
 	bool grassSimulated;
 
 	bool TimerStopped;
@@ -163,7 +160,6 @@ private:
 	QToolBar *fileToolBar;
 	//QToolBar *editToolBar;
 	QToolBar *designToolBar;
-	QToolBar *projectToolBar;
 
 	QActionGroup *windowActionGroup;
 
@@ -212,9 +208,6 @@ private:
 
 	QAction *aboutAction;
 	QAction *aboutQtAction;
-
-	//2017 Fall Doc Course Group
-	QAction *ButtonBoxAction;
 
 	QString fileFilters;
 
