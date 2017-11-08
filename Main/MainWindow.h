@@ -94,6 +94,7 @@ private slots:
 	void startSchematicEditor();
 	void startNeuralNetworkEditor();
 	void startDesignPanel();
+	void startYourProgram();
 
 	
 	void plotDCWaves();
@@ -215,6 +216,9 @@ private:
 
 	//2017 Fall Doc Course Group
 	QAction *ButtonBoxAction;
+	//Add Class Action here
+	QAction *action_Xie;
+	
 
 	QString fileFilters;
 
