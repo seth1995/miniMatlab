@@ -511,7 +511,7 @@ QPushButton *MainWindow::creatGroupBox()
 	//QGroupBox *groupBox = new QGroupBox(tr("&Push Buttons"));
 	QPushButton *popupButton = new QPushButton(QIcon(":/images/Classroom.png"), tr("&CourseProject"), this);
     QMenu *menu = new QMenu(this);
-    menu->addAction(tr("&1 谢起旭"));
+    action_Xie = menu->addAction(tr("&1 谢起旭"));
     menu->addAction(tr("&2 吴赟韬"));
     menu->addAction(tr("&3 张宇航"));
 	menu->addAction(tr("&4 甄沛宁"));
@@ -526,6 +526,9 @@ QPushButton *MainWindow::creatGroupBox()
 	menu->addAction(tr("&13 章伦"));
 	menu->addAction(tr("&14 贲月晶"));
 	menu->addAction(tr("&15 张灏"));
+
+	//set personal signal here
+	connect(action_Xie, SIGNAL(triggered()), this, SLOT(startYourProgram()) );
 	popupButton->setMenu(menu);
 	
 	/*
@@ -537,6 +540,16 @@ QPushButton *MainWindow::creatGroupBox()
 	return popupButton;
 
 };
+
+void MainWindow::startYourProgram()
+{
+
+	QMainWindow *tempWidget = new QMainWindow(this);
+
+	tempWidget->show();
+	tempWidget->setWindowTitle(tr("Testing ..."));
+
+}
 
 /*
    If user wanna cut some text, it must has at least one actived editor.

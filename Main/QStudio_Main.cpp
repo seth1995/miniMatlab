@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
 	//QDialog dialog;
 	//Transfer to chinese display
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+	//For linux the UTF-8 Should set to GBK
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));		//支持Tr中文
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
