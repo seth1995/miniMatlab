@@ -22,7 +22,7 @@
 #include "CommandView.h"
 #include "TextFileEditor.h"
 #include "../NeuralNetwork_UI/NeuralNetInterf.h"
-
+#include <QTextCodec>
 #if 0
 #include "waveviewer.h"
 #include "DesignPanel.h"
@@ -37,6 +37,10 @@ using namespace std;
 
 MainWindow::MainWindow()
 {
+	QTextCodec *codec = QTextCodec::codecForName("utf8");//情况2
+	QTextCodec::setCodecForTr(codec);
+	QTextCodec::setCodecForLocale(codec);
+	QTextCodec::setCodecForCStrings(codec);
 	grassSimulated = false;
 
 //====================================================================
