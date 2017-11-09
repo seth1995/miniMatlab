@@ -511,14 +511,10 @@ QPushButton *MainWindow::creatGroupBox()
     menu->addAction(tr("&2 吴赟韬"));
     menu->addAction(tr("&3 张宇航"));
 	menu->addAction(tr("&4 甄沛宁"));
-	menu->addAction(tr("&5 张异凡"));
 	menu->addAction(tr("&6 赵永磊"));
 	menu->addAction(tr("&7 虞灏"));
 	menu->addAction(tr("&8 陈佳鸣"));
-	menu->addAction(tr("&9 杨科"));
-	menu->addAction(tr("&10 郭人颂"));
 	menu->addAction(tr("&11 齐一衡"));
-	menu->addAction(tr("&12 梁威猛"));
 	menu->addAction(tr("&13 章伦"));
 	menu->addAction(tr("&14 贲月晶"));
 	menu->addAction(tr("&15 张灏"));
