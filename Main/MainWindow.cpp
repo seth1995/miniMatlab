@@ -12,7 +12,6 @@
 #include <QString>
 #include <QSplashScreen>
 
-
 #include <string>
 #include <iostream>
 
@@ -22,6 +21,7 @@
 #include "CommandView.h"
 #include "TextFileEditor.h"
 #include "../NeuralNetwork_UI/NeuralNetInterf.h"
+#include "GraphicShow.h"
 
 #if 0
 #include "waveviewer.h"
@@ -520,7 +520,7 @@ QPushButton *MainWindow::creatGroupBox()
 	menu->addAction(tr("&15 张灏"));
 
 	//set personal signal here
-	connect(action_Xie, SIGNAL(triggered()), this, SLOT(startYourProgram()) );
+	connect(action_Xie, SIGNAL(triggered()), this, SLOT(startGraphicView()) );
 	popupButton->setMenu(menu);
 	
 	/*
@@ -533,14 +533,17 @@ QPushButton *MainWindow::creatGroupBox()
 
 };
 
-void MainWindow::startYourProgram()
+void MainWindow::startGraphicView()
 {
-
+/*
 	QMainWindow *tempWidget = new QMainWindow(this);
 
 	tempWidget->show();
 	tempWidget->setWindowTitle(tr("Testing ..."));
-
+*/
+	Graphicshow *graphicshow = new Graphicshow;
+	graphicshow->resize(600, 400);   	
+	graphicshow->show();	
 }
 
 /*

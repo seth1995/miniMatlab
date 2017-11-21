@@ -36,6 +36,7 @@ class CommandView;
 class FileBrowser;
 class NN_Interface;
 class TextFileEditor;
+class Graphicshow;
 //class DesignPanel;
 //class SchematicEditor;
 //class WaveViewer;
@@ -94,7 +95,7 @@ private slots:
 	void startSchematicEditor();
 	void startNeuralNetworkEditor();
 	void startDesignPanel();
-	void startYourProgram();
+	void startGraphicView();
 
 	
 	void plotDCWaves();
@@ -224,6 +225,7 @@ private:
 
 	QTimer *qTimer;
 	QSplashScreen *qSplash;
+	Graphicshow *graphicshow;
 };
 
 #endif

@@ -37,6 +37,8 @@
     <file>images/waveviewer.ico</file>
     <file>images/zoom.png</file>
     <file>images/Classroom.png</file>
+    <file>images/Face1.png</file>
+    <file>images/Face2.png</file>
    
 </qresource>
 </RCC>
