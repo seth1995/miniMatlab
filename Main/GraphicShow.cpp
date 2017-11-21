@@ -12,12 +12,16 @@ Graphicshow::Graphicshow()
     sourceButton->setIconSize(picSize);
 
 	operatorComboBox = new QComboBox;
+	operatorComboBox-> addItem(tr("Text convert to imgae"));
 	operatorComboBox-> addItem(tr("Super Resolution"));
+	
 
 	directionLabel = new QLabel;
 	resultLabel = new QLabel;
     resultLabel->setMinimumWidth(picSize.width());
+	//creat the command viewer;
 	
+	CmdWindow = new CommandView;
 	//set choose image function
 	connect(sourceButton, SIGNAL(clicked()), this, SLOT(chooseSource()));
 	connect(operatorComboBox, SIGNAL(activated(int)),this, SLOT(refreshResult()));
@@ -27,10 +31,11 @@ Graphicshow::Graphicshow()
 	//resultImage = QImage(picSize, QImage::Format_ARGB32_Premultiplied);	
 	//create layout
 	QGridLayout *mainLayout = new QGridLayout;
-	mainLayout->addWidget(sourceButton, 0, 0, 3, 1);
-    mainLayout->addWidget(operatorComboBox, 1, 1);
-    mainLayout->addWidget(directionLabel, 1, 2);
-    mainLayout->addWidget(resultLabel, 0, 3, 3, 1);
+	mainLayout->addWidget(CmdWindow,0,0,8,8);
+	mainLayout->addWidget(sourceButton, 0, 8, 3, 1);
+    mainLayout->addWidget(operatorComboBox, 3, 8);
+    //mainLayout->addWidget(directionLabel, 1, 2);
+    mainLayout->addWidget(resultLabel, 4, 8, 3, 1);
 
 	mainLayout->setSizeConstraint(QLayout::SetFixedSize);
 
@@ -39,7 +44,7 @@ Graphicshow::Graphicshow()
 	displayResult(":/images/Face1.png",&resultImage,resultLabel);
 	
 	setLayout(mainLayout);
-	setWindowTitle(tr("Pixel Recursive Super Resolution"));
+	setWindowTitle(tr("Smallxie Project"));
 
 
 	

@@ -5,6 +5,7 @@
 
 #include <QPainter>
 #include <QWidget>
+#include "CommandView.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -12,6 +13,8 @@ class QComboBox;
 class QToolButton;
 class QLabel;
 class QImage;
+class CommandView;
+
 QT_END_NAMESPACE
 
 class Graphicshow : public QWidget
@@ -38,5 +41,7 @@ private:
 	QLabel *directionLabel;
 	QImage sourceImage;
 	QImage resultImage;
+
+	CommandView *CmdWindow;
 };
 #endif
