@@ -1,22 +1,23 @@
-/*************************************************************** 
+/***************************************************************
 	MainWindow.h
 
 	The Qt-Studio Project (since 2017)
- 
-	Contributor(s): 
-	SHI, Guoyong 		(shiguoyong@sjtu.edu.cn) 
-	School of Microelectronics, Shanghai Jiao Tong University 
-	(c) 2007 - 2007 
 
-******************************************************************/ 
+	Contributor(s):
+	SHI, Guoyong 		(shiguoyong@sjtu.edu.cn)
+	School of Microelectronics, Shanghai Jiao Tong University
+	(c) 2007 - 2007
+
+******************************************************************/
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <qmainwindow.h>
 #include <map>
+#include <QScrollArea>
 
-// forward declearation of class 
+// forward declearation of class
 class QAction;
 class QActionGroup;
 class QLabel;
@@ -57,12 +58,13 @@ public slots:
 	void openFile(const QString &fileName);
 	void closeFile(QString &filename);
 
+
 protected:
 	void closeEvent(QCloseEvent *event);
 
 private slots:
 	void stopTimer();
-	
+
 	void open();
  	void save();
 	void saveAs();
@@ -76,31 +78,33 @@ private slots:
 	void about();
 	void updateMenus();
 
-	void enableDesignAction();		
-	void enableSchematicAction();		
-	void enableNeuralNetworkAction();		
+	void enableDesignAction();
+	void enableSchematicAction();
+	void enableNeuralNetworkAction();
 
 	// Slots for file tables
 	void respondItemClick(int row, int column);
 	void setCurWorkspacePath(const QString &path);
 
 	// Slots for cmd window's commands
-	void simulate(const QString &cmd);	
+	void simulate(const QString &cmd);
  	void openCommand(const QString &cmd);
 	void LaunchWaveViewer(const QString &path);
 
 	void RunSimulation();
-	
+
 	void startSchematicEditor();
 	void startNeuralNetworkEditor();
 	void startDesignPanel();
 	void startYourProgram();
 
-	
+
 	void plotDCWaves();
 	void plotTRWaves();
 	void startWaveViewer();
-	
+	void startHaoYuWindow();
+	void HaoYuOpen();
+
 
 private:
 	void createActions();
@@ -112,7 +116,7 @@ private:
 
 	TextFileEditor* startTextFileEditor();
 	TextFileEditor* getActiveEditor();
-	
+
 	TextFileEditor *ActiveEditor;
 
 	std::map<QString, TextFileEditor*> File_To_Editor_Map;
@@ -125,7 +129,7 @@ private:
 	bool TimerStopped;
 
 	QString workingPath;
-	
+
 //	QString PrevNetlist;
 //	QString	CurrNetlist;
 
@@ -133,8 +137,9 @@ private:
 	// widget in main window
 //	QSplitter *mainSplitter;
 //	QSplitter *leftSplitter;
-		
+QScrollArea *scrollArea;
 	QLabel *readyLabel;
+	QLabel *imageLabel;
 	QWidgetList windows;
 	QWorkspace *myWorkspace;
 
@@ -142,8 +147,8 @@ private:
 	CommandView	*theCmdWindow;
 
 	NN_Interface *nnInterface;
-	
-#if 0	
+
+#if 0
 	DesignPanel	*theDesignPanel;	// Only one design panel for each design
 	SchematicEditor  *schematicEditor;	// only allows one schematic editor running
 	//WaveViewer *viewer;
@@ -160,6 +165,9 @@ private:
 	QMenu *windowMenu;
 	QMenu *helpMenu;
 
+	QMenu *HaoYuFileMenu;
+	QMenu *HaoYuRunMenu;
+	QMenu *HaoYuShowMenu;
 	// Toolbar list
 	QToolBar *fileToolBar;
 	//QToolBar *editToolBar;
@@ -174,6 +182,9 @@ private:
 	QAction *saveAction;
 	QAction *saveAsAction;
 	QAction *exitAction;
+
+	QAction *openFileAction;
+	QAction *runScriptAction;
 
 	// Recent file
 	QStringList recentFiles;
@@ -218,7 +229,8 @@ private:
 	QAction *ButtonBoxAction;
 	//Add Class Action here
 	QAction *action_Xie;
-	
+	QAction *action_HaoYu;
+
 
 	QString fileFilters;
 
@@ -227,5 +239,3 @@ private:
 };
 
 #endif
-
-

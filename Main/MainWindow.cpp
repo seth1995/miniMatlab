@@ -1,12 +1,12 @@
-/*************************************************************** 
+/***************************************************************
 	MainWindow.cpp
 
 	QT4 GUI for AnalogDesigner (AD)
- 
+
 	SHI, Guoyong 		(shiguoyong@ic.sjtu.edu.cn)
-	School of Microelectronics, Shanghai Jiao Tong University 
+	School of Microelectronics, Shanghai Jiao Tong University
 	(c) 2010 - 2012
-******************************************************************/ 
+******************************************************************/
 
 #include <QtGui>
 #include <QString>
@@ -15,7 +15,7 @@
 
 #include <string>
 #include <iostream>
-
+#include <QtWebKit>
 #include "Macro_Defs.h"
 #include "MainWindow.h"
 #include "FileBrowser.h"
@@ -23,6 +23,7 @@
 #include "TextFileEditor.h"
 #include "../NeuralNetwork_UI/NeuralNetInterf.h"
 #include <QTextCodec>
+#include <QProcess>
 #if 0
 #include "waveviewer.h"
 #include "DesignPanel.h"
@@ -53,7 +54,7 @@ MainWindow::MainWindow()
 	qSplash->show();
 
 	Qt::Alignment bottomRight = Qt::AlignRight | Qt::AlignBottom;
-	qSplash->showMessage(QObject::tr("Starting Qt Studio ..."), 
+	qSplash->showMessage(QObject::tr("Starting Qt Studio ..."),
 					bottomRight, Qt::white);
 
 	qTimer = new QTimer;
@@ -69,11 +70,11 @@ void MainWindow::doRestConstruct()
 //====================================================================
 
 	workingPath = ".";		// file path default to "."
-	
-	fileBrowser = new FileBrowser;	
-	
+
+	fileBrowser = new FileBrowser;
+
 	fileFilters = tr("Files (*.sp)\n"  "All files (*)");
-    	
+
 	myWorkspace = new QWorkspace;
 	connect(myWorkspace, SIGNAL(windowActivated(QWidget *)), this, SLOT(updateMenus()));
 
@@ -92,7 +93,7 @@ void MainWindow::doRestConstruct()
 	mainSplitter->addWidget(myWorkspace);
 	//mainSplitter->addWidget(theCmdWindow);
 	mainSplitter->setStretchFactor(1, 1);
-	
+
 	setCentralWidget(mainSplitter);
 
 	createActions();
@@ -107,7 +108,7 @@ void MainWindow::doRestConstruct()
 	connect( fileBrowser, SIGNAL(currentWorkspacePath(const QString &)),
 			this, SLOT(setCurWorkspacePath(const QString &)) );
 
-	// connect console commands with operation of main wondow 
+	// connect console commands with operation of main wondow
 	connect( theCmdWindow, SIGNAL(exitCommand()), this, SLOT(close()) );
 
 	connect( theCmdWindow, SIGNAL(simulateCommand(const QString &)),
@@ -120,11 +121,11 @@ void MainWindow::doRestConstruct()
 			theCmdWindow, SLOT(showMessage(const QString &)) );
 
 	setWindowTitle(tr("Qt Studio 2017"));
-		
+
 	resize(900, 600);
 	setWindowIcon(QPixmap(":/images/Qt_Studio.png"));
 
-#if 0	
+#if 0
 	theDesignPanel = NULL;
 	schematicEditor = NULL;
 #endif
@@ -139,7 +140,7 @@ void MainWindow::stopTimer()
 	TimerStopped = true;
 
 	qSplash->finish(this);
-	delete qSplash;	
+	delete qSplash;
 	delete qTimer;
 
 	doRestConstruct();
@@ -162,7 +163,7 @@ void MainWindow::about()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-#ifdef TRACE_	
+#ifdef TRACE_
 	cout << LINE_INFO << endl << flush;
 #endif
 	UNUSED_VAR(event);
@@ -176,11 +177,11 @@ void MainWindow::closeEvent(QCloseEvent *event)
 	if (schematicEditor) {
 		schematicEditor->close();
 	}
-	
+
 	if (getActiveEditor()) {
     	event->ignore();
-	} 
-	else { 
+	}
+	else {
 		event->accept();
 		printf("\n\tThank you for using Analog Designer. Goodbye!\n");
 	}
@@ -198,7 +199,7 @@ void MainWindow::closeFile(QString &filename)
 
 #if 1
 	File_To_Editor_Map.erase(filename);
-#endif	
+#endif
 }
 
 
@@ -246,7 +247,7 @@ void MainWindow::createActions()
 	exitAction->setStatusTip(tr("Exit the application"));
 	connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
-	// Cut text action    	
+	// Cut text action
 	cutAction = new QAction(QIcon(":/images/cut.png"), tr("Cu&t"), this);
 	cutAction->setShortcut(tr("Ctrl+X"));
 	cutAction->setStatusTip(tr("Cut the current selection to the "
@@ -274,7 +275,7 @@ void MainWindow::createActions()
 	toolbarviewAction->setCheckable(true);
 	toolbarviewAction->setChecked(true);
 	toolbarviewAction->setStatusTip( tr("Show or hide the toolbar") );
-	connect( toolbarviewAction, SIGNAL(toggled(bool)), 
+	connect( toolbarviewAction, SIGNAL(toggled(bool)),
 				this, SLOT(setToolbarShow(bool)) );
 
 	// View statusbar action
@@ -282,7 +283,7 @@ void MainWindow::createActions()
 	statusbarviewAction->setCheckable(true);
 	statusbarviewAction->setChecked(true);
 	statusbarviewAction->setStatusTip( tr("Show or hide the status toolbar") );
-	connect( statusbarviewAction, SIGNAL(toggled(bool)), 
+	connect( statusbarviewAction, SIGNAL(toggled(bool)),
 				this, SLOT(setStatusbarShow(bool)) );
 
    	// View design bar action
@@ -290,23 +291,23 @@ void MainWindow::createActions()
 	designbarviewAction->setCheckable(true);
 	designbarviewAction->setChecked(true);
 	designbarviewAction->setStatusTip( tr("Show or hide the design toolbar") );
-	connect( designbarviewAction, SIGNAL(toggled(bool)), 
+	connect( designbarviewAction, SIGNAL(toggled(bool)),
 				this, SLOT(setDesignbarShow(bool)) );
 
 	//--------- Design & Simulation actions -----------------------------------
-	
+
 	// Schematic editor action ==============
 	schematicAction = new QAction(QIcon(":/images/schematic.png"), tr("&Schematic Editor"), this);
 	schematicAction->setShortcut( tr("Ctrl+S") );
 	schematicAction->setStatusTip( tr("Lauch the schematic editor") );
 	connect( schematicAction, SIGNAL(triggered()), this, SLOT(startSchematicEditor()) );
-	
+
 	// Neural Network Design action ==============
-	neuralNetworkAction = new QAction(QIcon(":/images/neural_network.png"), 
+	neuralNetworkAction = new QAction(QIcon(":/images/neural_network.png"),
 						tr("&Neural network interface"), this);
 	neuralNetworkAction->setShortcut( tr("Ctrl+N") );
 	neuralNetworkAction->setStatusTip( tr("Lauch the neural network editor") );
-	connect( neuralNetworkAction, SIGNAL(triggered()), this, 
+	connect( neuralNetworkAction, SIGNAL(triggered()), this,
 						SLOT(startNeuralNetworkEditor()) );
 
 	// Waveviewer action ==============
@@ -398,7 +399,7 @@ void MainWindow::createActions()
 TextFileEditor *MainWindow::startTextFileEditor()
 {
     	TextFileEditor *editor = new TextFileEditor;
-		
+
     	connect(editor, SIGNAL(copyAvailable(bool)), cutAction, SLOT(setEnabled(bool)));
     	connect(editor, SIGNAL(copyAvailable(bool)), copyAction, SLOT(setEnabled(bool)));
 
@@ -432,13 +433,13 @@ void MainWindow::createMenus()
 	editMenu->addAction(cutAction);
 	editMenu->addAction(copyAction);
 	editMenu->addAction(pasteAction);
-	
+
 	// View menu
 	viewMenu = menuBar()->addMenu(tr("&View"));
 	viewMenu->addAction(toolbarviewAction);
 	viewMenu->addAction(statusbarviewAction);
 	viewMenu->addAction(designbarviewAction);
-	
+
 	// Simulation menu
 	simuMenu = menuBar()->addMenu(tr("&Simulate"));
 	simuMenu->addAction(simuAction);
@@ -479,7 +480,7 @@ void MainWindow::createStatusBar()
 
 void MainWindow::createToolBars()
 {
-	// File toolbar    	
+	// File toolbar
 	fileToolBar = addToolBar(tr("File"));
 	fileToolBar->addAction(newAction);
 	fileToolBar->addAction(openAction);
@@ -503,7 +504,7 @@ void MainWindow::createToolBars()
 	projectToolBar -> addWidget(creatGroupBox());
 
 	//	designAction->setEnabled(false);
-		
+
 }
 
 QPushButton *MainWindow::creatGroupBox()
@@ -517,7 +518,7 @@ QPushButton *MainWindow::creatGroupBox()
 	menu->addAction(tr("&4 甄沛宁"));
 	menu->addAction(tr("&5 张异凡"));
 	menu->addAction(tr("&6 赵永磊"));
-	menu->addAction(tr("&7 虞灏"));
+	action_HaoYu=menu->addAction(tr("&7 Hao Yu"));
 	menu->addAction(tr("&8 陈佳鸣"));
 	menu->addAction(tr("&9 杨科"));
 	menu->addAction(tr("&10 郭人颂"));
@@ -529,8 +530,9 @@ QPushButton *MainWindow::creatGroupBox()
 
 	//set personal signal here
 	connect(action_Xie, SIGNAL(triggered()), this, SLOT(startYourProgram()) );
+	connect(action_HaoYu, SIGNAL(triggered()), this, SLOT(startHaoYuWindow()) );
 	popupButton->setMenu(menu);
-	
+
 	/*
 	QVBoxLayout *vbox = new QVBoxLayout;
 	vbox -> addWidget(popupButton);
@@ -550,13 +552,86 @@ void MainWindow::startYourProgram()
 	tempWidget->setWindowTitle(tr("Testing ..."));
 
 }
+void MainWindow::startHaoYuWindow()
+{
+	QMainWindow *myWidget = new QMainWindow(this);
+
+	imageLabel = new QLabel;
+   imageLabel->setBackgroundRole(QPalette::Base);
+   imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+   imageLabel->setScaledContents(true);
+
+   scrollArea = new QScrollArea;
+   scrollArea->setBackgroundRole(QPalette::Dark);
+   scrollArea->setWidget(imageLabel);
+   myWidget->setCentralWidget(scrollArea);
+	// QWebView *view = new QWebView(myWidget);
+	// view->resize( QSize( 800,600 ));
+  //   view->load(QUrl("file:///code/R/temp.html"));
+  //  QProcess *process=new QProcess;
+	//process->start("Rscript", QStringList() << "/code/R/test.R"<<"/code/R/gifts.csv");
+	//cout<<"exit code: "<<process->exitCode()<<endl;
+	//QDeclarativeView *qmlView = new QDeclarativeView;
+	//qmlView->setSource(QUrl::fromLocalFile("../HaoYu/HaoYuProject/HaoYuProject.qml"));
+	//action
+	openFileAction = new QAction(QIcon(":/images/cut.png"), tr("Open"), myWidget);
+	connect(openFileAction, SIGNAL(triggered()), this, SLOT(HaoYuOpen()));
+	//
+	runScriptAction = new QAction(QIcon(":/images/cut.png"), tr("Run"), myWidget);
+	//connect(runScriptAction, SIGNAL(triggered()), this, SLOT());
+	//end of action
+	//UI part
+
+	HaoYuFileMenu=myWidget->menuBar()->addMenu(tr("&File"));
+	HaoYuFileMenu->addAction(openFileAction);
+	HaoYuRunMenu=myWidget->menuBar()->addMenu(tr("&Run"));
+	HaoYuRunMenu->addAction(runScriptAction);
+	HaoYuShowMenu=myWidget->menuBar()->addMenu(tr("&Show"));
+
+
+	myWidget->menuBar()->addSeparator();
+
+	//end of UI
+
+	QVBoxLayout *layout = new QVBoxLayout(myWidget);
+	//layout->addWidget(view);
+
+	myWidget->show();
+	myWidget->resize(1024,800);
+	myWidget->setWindowTitle(tr("Hao Yu"));
+}
+void MainWindow::HaoYuOpen()
+{
+	QString fileName = QFileDialog::getOpenFileName(this,
+															tr("Open File"), QDir::currentPath());
+if (!fileName.isEmpty()) {
+	QImage image(fileName);
+	if (image.isNull()) {
+			QMessageBox::information(this, tr("Image Viewer"),
+															 tr("Cannot load %1.").arg(fileName));
+			return;
+	}
+	imageLabel->setPixmap(QPixmap::fromImage(image));
+	imageLabel->adjustSize();
+	cout<<fileName.toStdString()<<endl;
+
+	// scaleFactor = 1.0;
+  //
+	// printAct->setEnabled(true);
+	// fitToWindowAct->setEnabled(true);
+	// updateActions();
+  //
+	// if (!fitToWindowAct->isChecked())
+	// 		imageLabel->adjustSize();
+}
+}
 
 /*
    If user wanna cut some text, it must has at least one actived editor.
 */
 void MainWindow::cut()
 {
-#if 1	
+#if 1
     if (getActiveEditor())
         getActiveEditor()->cut();
 #endif
@@ -578,7 +653,7 @@ void MainWindow::copy()
 */
 void MainWindow::paste()
 {
-#if 1	
+#if 1
     if (getActiveEditor())
         getActiveEditor()->paste();
 #endif
@@ -592,10 +667,10 @@ void MainWindow::paste()
 */
 void MainWindow::enableDesignAction()
 {
-#if 0	
+#if 0
 	delete theDesignPanel;
 	theDesignPanel = NULL;
-	
+
 	designAction->setEnabled(true);		// enable the "Design" action.
 #endif
 }
@@ -608,7 +683,7 @@ void MainWindow::enableSchematicAction()
 #if 0
 	delete schematicEditor;
 	schematicEditor = NULL;
-	
+
 	schematicAction->setEnabled(true);		// enable the schematic action.
 #endif
 }
@@ -622,7 +697,7 @@ void MainWindow::enableNeuralNetworkAction()
 	delete schematicEditor;
 	schematicEditor = NULL;
 #endif
-	
+
 	neuralNetworkAction->setEnabled(true);		// enable the schematic action.
 }
 
@@ -647,17 +722,17 @@ void MainWindow::newFile()
 void MainWindow::openFile(const QString &fileName)
 {
 	UNUSED_VAR(fileName);
-	
-#if 1	
+
+#if 1
 	TextFileEditor *editor = startTextFileEditor();
 
 	if (editor->openFile(fileName)) {
 		editor->show();
-	} 
+	}
 	else {
 		editor->close();
 	}
-#endif	
+#endif
 }
 
 /*
@@ -670,7 +745,7 @@ void MainWindow::openRecentFile()
 
 	if (editor->open()) {
     	editor->show();
-	} 
+	}
 	else {
     	editor->close();
 	}
@@ -683,10 +758,10 @@ void MainWindow::openRecentFile()
 */
 void MainWindow::open()
 {
-#if 1	
+#if 1
 	//cout << LINE_INFO << endl;
 
-	QString filename = QFileDialog::getOpenFileName(this, tr("Open file"), 
+	QString filename = QFileDialog::getOpenFileName(this, tr("Open file"),
 						workingPath, fileFilters);
 
 	workingPath = QFileInfo(filename).path();	// keep the current file path
@@ -695,12 +770,12 @@ void MainWindow::open()
 
 	if (QFileInfo(filename).fileName().isEmpty())
 		return;
-		
+
 	TextFileEditor *editor;
 
 	map<QString, TextFileEditor*>::const_iterator  it;
 	it = File_To_Editor_Map.find(filename);
-	
+
 	if (it != File_To_Editor_Map.end()) {
 		// Found the editor
 		editor = it->second;
@@ -710,15 +785,15 @@ void MainWindow::open()
 		} else {
 			simuAction->setEnabled(true);
 		}
-	} 
+	}
 	else {
 		// Did not find the editor
 	    	editor = startTextFileEditor();
-		connect(editor, SIGNAL(netlistClosed(QString &)), this, 
+		connect(editor, SIGNAL(netlistClosed(QString &)), this,
 						SLOT(closeFile(QString &)) );
 
 		File_To_Editor_Map.insert(make_pair(filename, editor));
-		
+
 		editor->openFile(filename);
 		editor->show();
 
@@ -726,7 +801,7 @@ void MainWindow::open()
 	}
 
 //	cout << LINE_INFO << "\n\tfilename = " << filename.toStdString() << endl;
-#endif	
+#endif
 }
 
 /*
@@ -734,12 +809,12 @@ void MainWindow::open()
 */
 void MainWindow::save()
 {
-#if 1	
+#if 1
 	if (getActiveEditor())
     	getActiveEditor()->save();
 
 	simuAction->setEnabled(true);		// enable the "Design" action.
-	
+
 //	ActiveEditor->SetSimulatedFlag(false);  // this netlist has not been simulated.
 #endif
 }
@@ -749,12 +824,12 @@ void MainWindow::save()
 */
 void MainWindow::saveAs()
 {
-#if 1	
+#if 1
     if (getActiveEditor())
         getActiveEditor()->saveAs();
 
 	simuAction->setEnabled(true);		// enable the "Design" action.
-#endif	
+#endif
 }
 
 void MainWindow::setToolbarShow(bool checked)
@@ -777,49 +852,49 @@ void MainWindow::simulate(const QString &cmd)
 {
 	QStringList list = cmd.split(QRegExp("\\s+"), QString::SkipEmptyParts);
 	QString fullPath;
-	
-	if ( workingPath.right(1) != "/" ) 
+
+	if ( workingPath.right(1) != "/" )
 		fullPath = workingPath + "/" + list[1];
-	else 
+	else
 		fullPath = workingPath + list[1];
 
 	if ( !QFile::exists(fullPath) ) {
-		QString info = "Cannot find file " + fullPath;		
-		QMessageBox::critical(this, tr("Open Error"), info);			
+		QString info = "Cannot find file " + fullPath;
+		QMessageBox::critical(this, tr("Open Error"), info);
 	}
-	else 
+	else
 	{
 		std::string spFile = fullPath.toStdString();
 
 		/*
 		int type = 0;
-		
+
 		if (list.count() >= 3)
-			type = list[2].toInt();	
+			type = list[2].toInt();
 		*/
-		
-		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor)); 		
+
+		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 #if 0
-		///if (read_netlist( spFile.c_str() )==0) 
-		if (GPDDrunner->Run_GPDD( spFile.c_str() ) == OK) 
+		///if (read_netlist( spFile.c_str() )==0)
+		if (GPDDrunner->Run_GPDD( spFile.c_str() ) == OK)
 		{
 			double time_elapsed = 0.0;   // timeQ.read();
 			QString msg;
  				QTextStream(&msg)<<"<p><font color=green>"
-					 <<"Simulation was completed successfully!"<<endl 
+					 <<"Simulation was completed successfully!"<<endl
 					 <<"<div>Elapsed time is "<<time_elapsed
 					 <<"</div></font>";
-			emit MessageSignal(msg); 
+			emit MessageSignal(msg);
 			QApplication::restoreOverrideCursor();
 			printf("\nSimulation was completed successfully!\n");
 			printf("Elapsed time is %f\n",time_elapsed);
 		}
 		else {
 			QString msg = "<p><font color=red> Simulation Error!</font></p>";
-			emit MessageSignal(msg); 
+			emit MessageSignal(msg);
 		}
 #endif
-	}		
+	}
 }
 
 
@@ -830,8 +905,8 @@ void MainWindow::openCommand(const QString &cmd)
 	QStringList list = cmd.split(QRegExp("\\s+"), QString::SkipEmptyParts);
 	int num = list.count();
 	QString filelist;
-	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor)); 
-	
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 	if ( num>1 ) {
 		for( int i=1; i<num; i++) {
 			//QMessageBox::information(this, tr("Open"), list[i]);
@@ -843,25 +918,25 @@ void MainWindow::openCommand(const QString &cmd)
 	QString msg;
 	QTextStream(&msg) << "<p><font color=green>"
 			 << "Open file " << filelist << " successfully!</font>";
-	emit MessageSignal(msg);	
+	emit MessageSignal(msg);
 }
 
 /*
 	This function is called when the "simulation" button/menu is clicked.
-	Each netlist is simulated only ONCE. 
+	Each netlist is simulated only ONCE.
 	Before starting another netlist simulation, all previously simulated results must be cleaned.
 */
 void MainWindow::RunSimulation()
 {
 	cout << LINE_INFO << endl;
-	
+
 #if 0
 	QString Qfilename = getActiveEditor()->getFileName();
 	string filename = Qfilename.toStdString();
-	
+
 //	cout << LINE_INFO << "\n\tNetlist file is : " << filename.toStdString() << endl;
 
-	if (GPDDrunner->Run_GPDD(filename) == OK) 
+	if (GPDDrunner->Run_GPDD(filename) == OK)
 	{
 		grassSimulated = true;		// simulation finished
 		designAction->setEnabled(true);
@@ -869,11 +944,11 @@ void MainWindow::RunSimulation()
 		ActiveEditor->SetSimulationFlag(true);  // this netlist has been simulated.
 
 		QString msg;
-		QTextStream(&msg) << "<p><font color=green>" 
+		QTextStream(&msg) << "<p><font color=green>"
 			  << "The netlist has been simulated successfully.\n"
 			  << "Click the <B>Design</B> icon \"D\" to start the design panel."
 			  << "</font></p>";
-		
+
 		QMessageBox::warning(this, tr("Simulation Successful"), msg);
 	}
 	else {
@@ -888,41 +963,41 @@ void MainWindow::RunSimulation()
 void MainWindow::plotDCWaves()
 {
 	cout << LINE_INFO << endl;
-#if 0	
+#if 0
 	QString filename;
-	
+
 	if (getActiveEditor()) {
 		filename = getActiveEditor()->windowTitle();
 	}
 
 	if ( filename.isEmpty() ) {
-		QString info = "Nothing to plot\n";				
+		QString info = "Nothing to plot\n";
 		QMessageBox::warning(this, tr("Plot Error"), info);
 		return;
 	}
-	
+
 	filename = filename.left( filename.length()-3 );
-	
+
 	if (filename.right(3)!=".sp"){
 		QString info = "The current actived file " + filename + \
 				" is not netlist file(*.sp).\n" + \
 				"You must active the sp file you want to plot.\n" + \
 				"Or implement plot in the konsole.\n" + \
-				"Command like this: plot -dc/tr filename.sp\n";				
+				"Command like this: plot -dc/tr filename.sp\n";
 		QMessageBox::warning(this, tr("DC Plot Error"), info);
 	}
-	else {	
+	else {
 		// *.sp -> *.dc
 		filename = filename.replace( filename.length()-2, 2, "dc" );
-		QString cmd = "waves " + filename;		
-		LaunchWaveViewer(cmd);		 
+		QString cmd = "waves " + filename;
+		LaunchWaveViewer(cmd);
     }
 #endif
 }
 
 void MainWindow::plotTRWaves()
 {
-#if 0	
+#if 0
 	QString filename = getActiveEditor()->windowTitle();
 	filename = filename.left( filename.length()-3 );
 	if(filename.right(3)!=".sp"){
@@ -930,7 +1005,7 @@ void MainWindow::plotTRWaves()
 				" is not netlist file(*.sp).\n" + \
 				"You must active the sp file you want to plot.\n" + \
 				"Or implement plot in the konsole.\n" + \
-				"Command like this: plot -dc/tr filename.sp\n";				
+				"Command like this: plot -dc/tr filename.sp\n";
 		QMessageBox::warning(this, tr("TRAN Plot Error"), info);
 	}
 	else {
@@ -946,19 +1021,19 @@ void MainWindow::plotTRWaves()
 void MainWindow::respondItemClick(int row, int column)
 {
 	QString fileName = fileBrowser->getfileNameFromItem(row, column);
-	
+
 	if (!fileName.isEmpty())
 		openFile(fileName);
 }
 
 void MainWindow::startWaveViewer()
 {
-#if 0	
+#if 0
 	WaveViewer *viewer = new WaveViewer;
-	
-	viewer->resize(600, 400);   	
+
+	viewer->resize(600, 400);
 	viewer->show();
-#endif	
+#endif
 }
 
 void MainWindow::LaunchWaveViewer(const QString &cmd)
@@ -966,48 +1041,48 @@ void MainWindow::LaunchWaveViewer(const QString &cmd)
 	cout << LINE_INFO << endl;
 
 	UNUSED_VAR(cmd);
-	
-#if 0	
+
+#if 0
 	QStringList list = cmd.split(QRegExp("\\s+"), QString::SkipEmptyParts);
 	QString dataFile = NULL;
-	
-	if (list.count()==2) 
+
+	if (list.count()==2)
 	{
 		dataFile = list[1];
 		if(!workingPath.isEmpty()) {
-			if( workingPath.right(1)!="/" ) 
+			if( workingPath.right(1)!="/" )
 				dataFile = workingPath + "/" + dataFile;
-			else 
+			else
 				dataFile = workingPath + dataFile;
 		}
 	}
-	
-	if (dataFile!=NULL) 
+
+	if (dataFile!=NULL)
 	{
-		if( !QFile::exists(dataFile) ) 
+		if( !QFile::exists(dataFile) )
 		{
-			QString info = "Cann't found file " + dataFile;		
-			QMessageBox::critical(this, tr("Open Error"), info);			
+			QString info = "Cann't found file " + dataFile;
+			QMessageBox::critical(this, tr("Open Error"), info);
 		}
-		else 
-		{	
-			QApplication::setOverrideCursor(QCursor(Qt::WaitCursor)); 
-			WaveViewer *viewer; 
+		else
+		{
+			QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+			WaveViewer *viewer;
 			viewer = new WaveViewer(dataFile, this);
-			viewer->resize(600, 400);   	
+			viewer->resize(600, 400);
 			viewer->show();
-			
+
 			QString msg;
 			QTextStream(&msg) << "<p><font color=green>"
 				  << "Wave Viewer started successfully!"
 				  << "<div>" << dataFile << " was opened successfully!"
 				  << "</div></font>";
 			emit MessageSignal(msg);
-			
+
 			QApplication::restoreOverrideCursor();
 		}
 	}
-#endif	
+#endif
 }
 
 void MainWindow::readSettings()
@@ -1024,18 +1099,18 @@ void MainWindow::startNeuralNetworkEditor()
 	cout << LINE_INFO << endl;
 #endif
 
-	/* By inheriting "this", the QWidget instance will be closed when 
+	/* By inheriting "this", the QWidget instance will be closed when
 	the MainWindow is closed. */
 
 	if (! nnInterface) {
 		nnInterface = new NN_Interface(this);
 	    nnInterface->setGeometry(100, 40, 600, 600);
-		connect(nnInterface, SIGNAL(NN_InterfaceClosed()), 
-						this, SLOT(enableNeuralNetworkAction()) ); 
+		connect(nnInterface, SIGNAL(NN_InterfaceClosed()),
+						this, SLOT(enableNeuralNetworkAction()) );
 	}
 
 	neuralNetworkAction->setEnabled(false);	// disable the action button
-	
+
     nnInterface->show();
 }
 
@@ -1060,19 +1135,19 @@ void MainWindow::startSchematicEditor()
 	schematicEditor = new SchematicEditor(this);
 
 	// Connect signals from the schematic editor:
-	connect(schematicEditor, SIGNAL(SchematicEditorClosed()), 
-					this, SLOT(EnableSchematicAction()) ); 
-	connect(schematicEditor, SIGNAL(SpiceSimRequested()), 
-					this, SLOT(RunSimulation()) ); 
-	connect(schematicEditor, SIGNAL(SymbolicSimRequested()), 
-					this, SLOT(RunSimulation()) ); 
-	connect(schematicEditor, SIGNAL(DesignPanelRequested()), 
-					this, SLOT(startDesignPanel()) ); 
-	
+	connect(schematicEditor, SIGNAL(SchematicEditorClosed()),
+					this, SLOT(EnableSchematicAction()) );
+	connect(schematicEditor, SIGNAL(SpiceSimRequested()),
+					this, SLOT(RunSimulation()) );
+	connect(schematicEditor, SIGNAL(SymbolicSimRequested()),
+					this, SLOT(RunSimulation()) );
+	connect(schematicEditor, SIGNAL(DesignPanelRequested()),
+					this, SLOT(startDesignPanel()) );
+
 	schematicEditor->setGeometry(100, 20, 1000, 700);
 	schematicEditor->show();
 	schematicAction->setEnabled(false);	// disable the "Schematic" action
-#endif	
+#endif
 }
 
 void MainWindow::startDesignPanel()
@@ -1084,14 +1159,14 @@ void MainWindow::startDesignPanel()
 		delete theDesignPanel;
 		// Only one design panel is allowed.
 	}
-	
+
 	// By inheriting "this", the DesignPanel will be closed when the MainWindow is closed.
 	theDesignPanel = new DesignPanel(this);
 	connect( theDesignPanel, SIGNAL(DesignPanelClosed()), this, SLOT(EnableDesignAction()) );
-	
-	theDesignPanel ->resize(900, 600);   	
+
+	theDesignPanel ->resize(900, 600);
 	theDesignPanel ->show();
-			
+
 	QString msg;
 	QTextStream(&msg) << "<p><font color=green>"
 			  << "Click the <B>PLOT</B> icon to plot the frequency response."
@@ -1099,7 +1174,7 @@ void MainWindow::startDesignPanel()
 	QMessageBox::warning(this, tr("AC Analysis Done"), msg);
 
 	designAction->setEnabled(false);		// disable the "Design" action.
-#endif	
+#endif
 }
 
 
@@ -1111,22 +1186,22 @@ void MainWindow::writeSettings()
 void MainWindow::setCurWorkspacePath(const QString &path)
 {
 	cout << LINE_INFO << endl;
-	
+
 	workingPath = path;
 }
 
 
 /**
-	Most menu options only make sense if there is an active window, 
-	so we disable them if there isn't one. 
-	At the end, we call setChecked() on the QAction representing the 
-	active window. 
-	Thanks to the QActionGroup, we don't need to explicitly uncheck 
+	Most menu options only make sense if there is an active window,
+	so we disable them if there isn't one.
+	At the end, we call setChecked() on the QAction representing the
+	active window.
+	Thanks to the QActionGroup, we don't need to explicitly uncheck
 	the previously active window.
 */
 void MainWindow::updateMenus()
 {
-#if 0	
+#if 0
 	bool hasEditor = (getActiveEditor() != 0);
 	bool hasSelection = getActiveEditor()
 	                && getActiveEditor()->textCursor().hasSelection();
@@ -1134,12 +1209,12 @@ void MainWindow::updateMenus()
 	saveAction->setEnabled(hasEditor);
 	saveAsAction->setEnabled(hasEditor);
 	pasteAction->setEnabled(hasEditor);
-	
+
 	cutAction->setEnabled(hasSelection);
 	copyAction->setEnabled(hasSelection);
 
 //	designAction->setEnabled(grassSimulated);
-	
+
 	closeAction->setEnabled(hasEditor);
 	closeAllAction->setEnabled(hasEditor);
 	tileAction->setEnabled(hasEditor);
@@ -1152,6 +1227,5 @@ void MainWindow::updateMenus()
 		ActiveEditor->windowMenuAction()->setChecked(true);
 		simuAction->setEnabled( ! (ActiveEditor->Simulated()) );
 	}
-#endif	
+#endif
 }
-
