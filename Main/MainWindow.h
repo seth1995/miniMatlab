@@ -104,7 +104,13 @@ private slots:
 	void startWaveViewer();
 	void startHaoYuWindow();
 	void HaoYuOpen();
-
+	void on_jobFinished();
+	void ShowImg0();
+	void ShowImg1();
+	void ShowImg2();
+	void ShowImg3();
+	void ShowImg4();
+	void ShowHtml();
 
 private:
 	void createActions();
@@ -137,7 +143,8 @@ private:
 	// widget in main window
 //	QSplitter *mainSplitter;
 //	QSplitter *leftSplitter;
-QScrollArea *scrollArea;
+	QMainWindow *HaoYuWidget;
+	QScrollArea *scrollArea;
 	QLabel *readyLabel;
 	QLabel *imageLabel;
 	QWidgetList windows;
@@ -185,7 +192,12 @@ QScrollArea *scrollArea;
 
 	QAction *openFileAction;
 	QAction *runScriptAction;
-
+	QAction *showP0Action;
+	QAction *showP1Action;
+	QAction *showP2Action;
+	QAction *showP3Action;
+	QAction *showP4Action;
+	QAction *showHtmlAction;
 	// Recent file
 	QStringList recentFiles;
 	QString curFile;
